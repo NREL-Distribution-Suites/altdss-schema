@@ -20,7 +20,7 @@ from pydantic import (
     RootModel,
     ValidationInfo,
 )
-from altdss_schema.pydantic_complex import Complex
+from .pydantic_complex import Complex
 
 ARRAY_LIKE = (list, tuple, np.ndarray)
 
@@ -754,10 +754,10 @@ class ArrayOrFilePath(RootModel[Union[FloatArray, FloatArrayFromCSV, FloatArrayF
     root: Union[FloatArray, FloatArrayFromCSV, FloatArrayFromDbl, FloatArrayFromSng] = Field(..., title="ArrayOrFilePath")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "ArrayOrFilePath":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -791,10 +791,10 @@ class StringArrayOrFilePath(RootModel[Union[StringArray, StringArrayFromFile]]):
     root: Union[StringArray, StringArrayFromFile] = Field(..., title="StringArrayOrFilePath")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "StringArrayOrFilePath":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -890,9 +890,9 @@ class Bus(BaseModel):
             output.write(f'KeepList ({_Name} )\n')
         
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "Bus":
-        _fields_set = set(self.keys())
+        _fields_set = set([i for i in self.model_fields if getattr(self,i) is not None])
         _anyOf_Bus_0 = _fields_set.issuperset({'kVLN'}) and (not {'kVLL'}.issubset(_fields_set))
         _anyOf_Bus_1 = _fields_set.issuperset({'kVLL'}) and (not {'kVLN'}.issubset(_fields_set))
         _anyOf_Bus_2 = _fields_set.issuperset({}) and (not {'kVLL', 'kVLN'}.issubset(_fields_set))
@@ -1116,9 +1116,9 @@ class LineCode(RootModel[Union[LineCode_Z0Z1C0C1, LineCode_ZMatrixCMatrix]]):
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "LineCode":
-        _fields_set = set(self.keys())
+        _fields_set = set([i for i in self.root.model_fields if getattr(self.root,i) is not None])
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_Z0Z1C0C1 = _fields_set.issuperset({'C1', 'R1', 'X1'})
         _required_ZMatrixCMatrix = _fields_set.issuperset({'RMatrix', 'XMatrix'})
@@ -1146,10 +1146,10 @@ class LineCodeContainer(RootModel[Union[LineCodeList, JSONFilePath, JSONLinesFil
     root: Union[LineCodeList, JSONFilePath, JSONLinesFilePath] = Field(..., title="LineCodeContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "LineCodeContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -1387,9 +1387,9 @@ class LoadShape(RootModel[Union[LoadShape_PMultQMultHour, LoadShape_PMultQMultIn
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "LoadShape":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_PMultQMultHour = _fields_set.issuperset({'Hour', 'PMult'})
         _required_PMultQMultInterval = _fields_set.issuperset({'Interval', 'PMult'})
@@ -1421,10 +1421,10 @@ class LoadShapeContainer(RootModel[Union[LoadShapeList, JSONFilePath, JSONLinesF
     root: Union[LoadShapeList, JSONFilePath, JSONLinesFilePath] = Field(..., title="LoadShapeContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "LoadShapeContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -1596,9 +1596,9 @@ class TShape(RootModel[Union[TShape_TempHour, TShape_TempInterval, TShape_CSVFil
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "TShape":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_TempHour = _fields_set.issuperset({'Hour', 'Temp'})
         _required_TempInterval = _fields_set.issuperset({'Interval', 'Temp'})
@@ -1629,10 +1629,10 @@ class TShapeContainer(RootModel[Union[TShapeList, JSONFilePath, JSONLinesFilePat
     root: Union[TShapeList, JSONFilePath, JSONLinesFilePath] = Field(..., title="TShapeContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "TShapeContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -1804,9 +1804,9 @@ class PriceShape(RootModel[Union[PriceShape_PriceHour, PriceShape_PriceInterval,
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "PriceShape":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_PriceHour = _fields_set.issuperset({'Hour', 'Price'})
         _required_PriceInterval = _fields_set.issuperset({'Interval', 'Price'})
@@ -1837,10 +1837,10 @@ class PriceShapeContainer(RootModel[Union[PriceShapeList, JSONFilePath, JSONLine
     root: Union[PriceShapeList, JSONFilePath, JSONLinesFilePath] = Field(..., title="PriceShapeContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "PriceShapeContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -2009,9 +2009,9 @@ class XYcurve(RootModel[Union[XYcurve_XarrayYarray, XYcurve_CSVFile, XYcurve_Sng
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "XYcurve":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_XarrayYarray = _fields_set.issuperset({'XArray', 'YArray'})
         _required_CSVFile = _fields_set.issuperset({'CSVFile'})
@@ -2041,10 +2041,10 @@ class XYcurveContainer(RootModel[Union[XYcurveList, JSONFilePath, JSONLinesFileP
     root: Union[XYcurveList, JSONFilePath, JSONLinesFilePath] = Field(..., title="XYcurveContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "XYcurveContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -2193,9 +2193,9 @@ class GrowthShape(RootModel[Union[GrowthShape_YearMult, GrowthShape_CSVFile, Gro
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "GrowthShape":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_YearMult = _fields_set.issuperset({'Mult', 'Year'})
         _required_CSVFile = _fields_set.issuperset({'CSVFile'})
@@ -2225,10 +2225,10 @@ class GrowthShapeContainer(RootModel[Union[GrowthShapeList, JSONFilePath, JSONLi
     root: Union[GrowthShapeList, JSONFilePath, JSONLinesFilePath] = Field(..., title="GrowthShapeContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "GrowthShapeContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -2359,10 +2359,10 @@ class TCC_CurveContainer(RootModel[Union[TCC_CurveList, JSONFilePath, JSONLinesF
     root: Union[TCC_CurveList, JSONFilePath, JSONLinesFilePath] = Field(..., title="TCC_CurveContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "TCC_CurveContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -2514,9 +2514,9 @@ class Spectrum(RootModel[Union[Spectrum_HarmonicAnglepctMag, Spectrum_CSVFile]])
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "Spectrum":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_HarmonicAnglepctMag = _fields_set.issuperset({'Angle', 'Harmonic', 'pctMag'})
         _required_CSVFile = _fields_set.issuperset({'CSVFile'})
@@ -2544,10 +2544,10 @@ class SpectrumContainer(RootModel[Union[SpectrumList, JSONFilePath, JSONLinesFil
     root: Union[SpectrumList, JSONFilePath, JSONLinesFilePath] = Field(..., title="SpectrumContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "SpectrumContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -2699,10 +2699,10 @@ class WireDataContainer(RootModel[Union[WireDataList, JSONFilePath, JSONLinesFil
     root: Union[WireDataList, JSONFilePath, JSONLinesFilePath] = Field(..., title="WireDataContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "WireDataContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -2894,10 +2894,10 @@ class CNDataContainer(RootModel[Union[CNDataList, JSONFilePath, JSONLinesFilePat
     root: Union[CNDataList, JSONFilePath, JSONLinesFilePath] = Field(..., title="CNDataContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "CNDataContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -3084,10 +3084,10 @@ class TSDataContainer(RootModel[Union[TSDataList, JSONFilePath, JSONLinesFilePat
     root: Union[TSDataList, JSONFilePath, JSONLinesFilePath] = Field(..., title="TSDataContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "TSDataContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -3208,10 +3208,10 @@ class LineSpacingContainer(RootModel[Union[LineSpacingList, JSONFilePath, JSONLi
     root: Union[LineSpacingList, JSONFilePath, JSONLinesFilePath] = Field(..., title="LineSpacingContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "LineSpacingContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -3396,9 +3396,9 @@ class LineGeometry(RootModel[Union[LineGeometry_LineSpacing, LineGeometry_xh]]):
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "LineGeometry":
-        _fields_set = set(self.keys())
+        _fields_set = set([i for i in self.root.model_fields if getattr(self.root,i) is not None])
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_LineSpacing = _fields_set.issuperset({'Spacing'})
         _required_xh = _fields_set.issuperset({'H', 'X'})
@@ -3426,10 +3426,10 @@ class LineGeometryContainer(RootModel[Union[LineGeometryList, JSONFilePath, JSON
     root: Union[LineGeometryList, JSONFilePath, JSONLinesFilePath] = Field(..., title="LineGeometryContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "LineGeometryContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -3713,9 +3713,9 @@ class XfmrCode(RootModel[Union[XfmrCode_X12X13X23, XfmrCode_XscArray]]):
                     output.write(f" RDCOhms={_RDCOhms[_Wdg]}")
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "XfmrCode":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.root.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_X12X13X23 = _fields_set.issuperset({'X12'})
         _required_XscArray = _fields_set.issuperset({'XSCArray'})
@@ -3743,10 +3743,10 @@ class XfmrCodeContainer(RootModel[Union[XfmrCodeList, JSONFilePath, JSONLinesFil
     root: Union[XfmrCodeList, JSONFilePath, JSONLinesFilePath] = Field(..., title="XfmrCodeContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "XfmrCodeContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -4036,9 +4036,10 @@ class Line(RootModel[Union[Line_LineCode, Line_LineGeometry, Line_SpacingWires, 
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "Line":
-        _fields_set = set(self.keys())
+
+        _fields_set = set([i for i in self.root.model_fields if getattr(self.root,i) is not None])
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_LineCode = _fields_set.issuperset({'LineCode'})
         _required_LineGeometry = _fields_set.issuperset({'Geometry'})
@@ -4069,10 +4070,10 @@ class LineContainer(RootModel[Union[LineList, JSONFilePath, JSONLinesFilePath]])
     root: Union[LineList, JSONFilePath, JSONLinesFilePath] = Field(..., title="LineContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "LineContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -4308,9 +4309,9 @@ class Vsource(RootModel[Union[Vsource_MVAsc3MVAsc1x1r1x0r0, Vsource_Isc3Isc1x1r1
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "Vsource":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_MVAsc3MVAsc1x1r1x0r0 = _fields_set.issuperset({'MVASC3'})
         _required_Isc3Isc1x1r1x0r0 = _fields_set.issuperset({'Isc3'})
@@ -4340,10 +4341,10 @@ class VsourceContainer(RootModel[Union[VsourceList, JSONFilePath, JSONLinesFileP
     root: Union[VsourceList, JSONFilePath, JSONLinesFilePath] = Field(..., title="VsourceContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "VsourceContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -4502,10 +4503,10 @@ class IsourceContainer(RootModel[Union[IsourceList, JSONFilePath, JSONLinesFileP
     root: Union[IsourceList, JSONFilePath, JSONLinesFilePath] = Field(..., title="IsourceContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "IsourceContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -4674,10 +4675,10 @@ class VCCSContainer(RootModel[Union[VCCSList, JSONFilePath, JSONLinesFilePath]])
     root: Union[VCCSList, JSONFilePath, JSONLinesFilePath] = Field(..., title="VCCSContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "VCCSContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -4972,9 +4973,9 @@ class Load(RootModel[Union[Load_kWPF, Load_kWkvar, Load_kVAPF, Load_xfkVAAllocat
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "Load":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_kWPF = _fields_set.issuperset({'kW', 'PF'})
         _required_kWkvar = _fields_set.issuperset({'kvar', 'kW'})
@@ -5005,10 +5006,10 @@ class LoadContainer(RootModel[Union[LoadList, JSONFilePath, JSONLinesFilePath]])
     root: Union[LoadList, JSONFilePath, JSONLinesFilePath] = Field(..., title="LoadContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "LoadContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -5366,9 +5367,9 @@ class Transformer(RootModel[Union[Transformer_XfmrCode, Transformer_X12X13X23kV,
                     output.write(f" RDCOhms={_RDCOhms[_Wdg]}")
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "Transformer":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.root.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_XfmrCode = _fields_set.issuperset({'XfmrCode'})
         _required_X12X13X23kV = _fields_set.issuperset({'kV', 'X12'})
@@ -5397,10 +5398,10 @@ class TransformerContainer(RootModel[Union[TransformerList, JSONFilePath, JSONLi
     root: Union[TransformerList, JSONFilePath, JSONLinesFilePath] = Field(..., title="TransformerContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "TransformerContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -5659,10 +5660,10 @@ class RegControlContainer(RootModel[Union[RegControlList, JSONFilePath, JSONLine
     root: Union[RegControlList, JSONFilePath, JSONLinesFilePath] = Field(..., title="RegControlContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "RegControlContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -5931,9 +5932,9 @@ class Capacitor(RootModel[Union[Capacitor_kvarkV, Capacitor_cmatrix, Capacitor_c
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "Capacitor":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.root.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_kvarkV = _fields_set.issuperset({'kV', 'kvar'})
         _required_cmatrix = _fields_set.issuperset({'CMatrix'})
@@ -5962,10 +5963,10 @@ class CapacitorContainer(RootModel[Union[CapacitorList, JSONFilePath, JSONLinesF
     root: Union[CapacitorList, JSONFilePath, JSONLinesFilePath] = Field(..., title="CapacitorContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "CapacitorContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -6178,9 +6179,9 @@ class Reactor(RootModel[Union[Reactor_kVkvarRcurveLcurve, Reactor_ZRcurveLcurve,
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "Reactor":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_kVkvarRcurveLcurve = _fields_set.issuperset({'kV', 'kvar'})
         _required_ZRcurveLcurve = _fields_set.issuperset({'Z'})
@@ -6210,10 +6211,10 @@ class ReactorContainer(RootModel[Union[ReactorList, JSONFilePath, JSONLinesFileP
     root: Union[ReactorList, JSONFilePath, JSONLinesFilePath] = Field(..., title="ReactorContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "ReactorContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -6427,10 +6428,10 @@ class CapControlContainer(RootModel[Union[CapControlList, JSONFilePath, JSONLine
     root: Union[CapControlList, JSONFilePath, JSONLinesFilePath] = Field(..., title="CapControlContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "CapControlContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -6587,9 +6588,9 @@ class Fault(RootModel[Union[Fault_r, Fault_Gmatrix]]):
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "Fault":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_r = _fields_set.issuperset({'R'})
         _required_Gmatrix = _fields_set.issuperset({'GMatrix'})
@@ -6617,10 +6618,10 @@ class FaultContainer(RootModel[Union[FaultList, JSONFilePath, JSONLinesFilePath]
     root: Union[FaultList, JSONFilePath, JSONLinesFilePath] = Field(..., title="FaultContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "FaultContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -6729,10 +6730,10 @@ class DynamicExpContainer(RootModel[Union[DynamicExpList, JSONFilePath, JSONLine
     root: Union[DynamicExpList, JSONFilePath, JSONLinesFilePath] = Field(..., title="DynamicExpContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "DynamicExpContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -7048,9 +7049,9 @@ class Generator(RootModel[Union[Generator_kWpf, Generator_kWkvar]]):
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "Generator":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_kWpf = _fields_set.issuperset({'kW', 'PF'})
         _required_kWkvar = _fields_set.issuperset({'kvar', 'kW'})
@@ -7078,10 +7079,10 @@ class GeneratorContainer(RootModel[Union[GeneratorList, JSONFilePath, JSONLinesF
     root: Union[GeneratorList, JSONFilePath, JSONLinesFilePath] = Field(..., title="GeneratorContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "GeneratorContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -7228,10 +7229,10 @@ class GenDispatcherContainer(RootModel[Union[GenDispatcherList, JSONFilePath, JS
     root: Union[GenDispatcherList, JSONFilePath, JSONLinesFilePath] = Field(..., title="GenDispatcherContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "GenDispatcherContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -7627,9 +7628,9 @@ class Storage(RootModel[Union[Storage_kWRatedPF, Storage_kWRatedkvar]]):
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "Storage":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_kWRatedPF = _fields_set.issuperset({'kWRated', 'PF'})
         _required_kWRatedkvar = _fields_set.issuperset({'kvar', 'kWRated'})
@@ -7660,10 +7661,10 @@ class StorageContainer(RootModel[Union[StorageList, JSONFilePath, JSONLinesFileP
     root: Union[StorageList, JSONFilePath, JSONLinesFilePath] = Field(..., title="StorageContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "StorageContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -7950,10 +7951,10 @@ class StorageControllerContainer(RootModel[Union[StorageControllerList, JSONFile
     root: Union[StorageControllerList, JSONFilePath, JSONLinesFilePath] = Field(..., title="StorageControllerContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "StorageControllerContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -8303,10 +8304,10 @@ class RelayContainer(RootModel[Union[RelayList, JSONFilePath, JSONLinesFilePath]
     root: Union[RelayList, JSONFilePath, JSONLinesFilePath] = Field(..., title="RelayContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "RelayContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -8526,10 +8527,10 @@ class RecloserContainer(RootModel[Union[RecloserList, JSONFilePath, JSONLinesFil
     root: Union[RecloserList, JSONFilePath, JSONLinesFilePath] = Field(..., title="RecloserContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "RecloserContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -8678,10 +8679,10 @@ class FuseContainer(RootModel[Union[FuseList, JSONFilePath, JSONLinesFilePath]])
     root: Union[FuseList, JSONFilePath, JSONLinesFilePath] = Field(..., title="FuseContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "FuseContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -8817,10 +8818,10 @@ class SwtControlContainer(RootModel[Union[SwtControlList, JSONFilePath, JSONLine
     root: Union[SwtControlList, JSONFilePath, JSONLinesFilePath] = Field(..., title="SwtControlContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "SwtControlContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -9165,9 +9166,9 @@ class PVSystem(RootModel[Union[PVSystem_PF, PVSystem_kvar]]):
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "PVSystem":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_PF = _fields_set.issuperset({'PF'})
         _required_kvar = _fields_set.issuperset({'kvar'})
@@ -9198,10 +9199,10 @@ class PVSystemContainer(RootModel[Union[PVSystemList, JSONFilePath, JSONLinesFil
     root: Union[PVSystemList, JSONFilePath, JSONLinesFilePath] = Field(..., title="PVSystemContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "PVSystemContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -9391,10 +9392,10 @@ class UPFCContainer(RootModel[Union[UPFCList, JSONFilePath, JSONLinesFilePath]])
     root: Union[UPFCList, JSONFilePath, JSONLinesFilePath] = Field(..., title="UPFCContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "UPFCContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -9500,10 +9501,10 @@ class UPFCControlContainer(RootModel[Union[UPFCControlList, JSONFilePath, JSONLi
     root: Union[UPFCControlList, JSONFilePath, JSONLinesFilePath] = Field(..., title="UPFCControlContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "UPFCControlContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -9696,10 +9697,10 @@ class ESPVLControlContainer(RootModel[Union[ESPVLControlList, JSONFilePath, JSON
     root: Union[ESPVLControlList, JSONFilePath, JSONLinesFilePath] = Field(..., title="ESPVLControlContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "ESPVLControlContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -9897,10 +9898,10 @@ class IndMach012Container(RootModel[Union[IndMach012List, JSONFilePath, JSONLine
     root: Union[IndMach012List, JSONFilePath, JSONLinesFilePath] = Field(..., title="IndMach012Container")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "IndMach012Container":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -10049,9 +10050,9 @@ class GICsource(RootModel[Union[GICsource_VoltsAngle, GICsource_ENEELat1Lon1Lat2
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "GICsource":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_VoltsAngle = _fields_set.issuperset({'Volts'})
         _required_ENEELat1Lon1Lat2Lon2 = _fields_set.issuperset({'EE', 'EN', 'Lat1', 'Lat2', 'Lon1', 'Lon2'})
@@ -10079,10 +10080,10 @@ class GICsourceContainer(RootModel[Union[GICsourceList, JSONFilePath, JSONLinesF
     root: Union[GICsourceList, JSONFilePath, JSONLinesFilePath] = Field(..., title="GICsourceContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "GICsourceContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -10411,9 +10412,9 @@ class AutoTrans(RootModel[Union[AutoTrans_XHXXHTXXT, AutoTrans_XscArray]]):
                     output.write(f" NumTaps={_NumTaps[_Wdg]}")
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "AutoTrans":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_XHXXHTXXT = _fields_set.issuperset({'XHX'})
         _required_XscArray = _fields_set.issuperset({'XSCArray'})
@@ -10441,10 +10442,10 @@ class AutoTransContainer(RootModel[Union[AutoTransList, JSONFilePath, JSONLinesF
     root: Union[AutoTransList, JSONFilePath, JSONLinesFilePath] = Field(..., title="AutoTransContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "AutoTransContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -10705,10 +10706,10 @@ class InvControlContainer(RootModel[Union[InvControlList, JSONFilePath, JSONLine
     root: Union[InvControlList, JSONFilePath, JSONLinesFilePath] = Field(..., title="InvControlContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "InvControlContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -10879,10 +10880,10 @@ class ExpControlContainer(RootModel[Union[ExpControlList, JSONFilePath, JSONLine
     root: Union[ExpControlList, JSONFilePath, JSONLinesFilePath] = Field(..., title="ExpControlContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "ExpControlContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -11044,9 +11045,9 @@ class GICLine(RootModel[Union[GICLine_VoltsAngle, GICLine_ENEELat1Lon1Lat2Lon2]]
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "GICLine":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_VoltsAngle = _fields_set.issuperset({'Volts'})
         _required_ENEELat1Lon1Lat2Lon2 = _fields_set.issuperset({'EE', 'EN', 'Lat1', 'Lat2', 'Lon1', 'Lon2'})
@@ -11074,10 +11075,10 @@ class GICLineContainer(RootModel[Union[GICLineList, JSONFilePath, JSONLinesFileP
     root: Union[GICLineList, JSONFilePath, JSONLinesFilePath] = Field(..., title="GICLineContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "GICLineContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -11271,9 +11272,9 @@ class GICTransformer(RootModel[Union[GICTransformer_R1R2, GICTransformer_pctR1pc
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "GICTransformer":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_R1R2 = _fields_set.issuperset({'R1'})
         _required_pctR1pctR2 = _fields_set.issuperset({'pctR1'})
@@ -11301,10 +11302,10 @@ class GICTransformerContainer(RootModel[Union[GICTransformerList, JSONFilePath, 
     root: Union[GICTransformerList, JSONFilePath, JSONLinesFilePath] = Field(..., title="GICTransformerContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "GICTransformerContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -11503,10 +11504,10 @@ class VSConverterContainer(RootModel[Union[VSConverterList, JSONFilePath, JSONLi
     root: Union[VSConverterList, JSONFilePath, JSONLinesFilePath] = Field(..., title="VSConverterContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "VSConverterContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -11642,10 +11643,10 @@ class MonitorContainer(RootModel[Union[MonitorList, JSONFilePath, JSONLinesFileP
     root: Union[MonitorList, JSONFilePath, JSONLinesFilePath] = Field(..., title="MonitorContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "MonitorContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -11841,10 +11842,10 @@ class EnergyMeterContainer(RootModel[Union[EnergyMeterList, JSONFilePath, JSONLi
     root: Union[EnergyMeterList, JSONFilePath, JSONLinesFilePath] = Field(..., title="EnergyMeterContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "EnergyMeterContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
@@ -11994,9 +11995,9 @@ class Sensor(RootModel[Union[Sensor_kWskvars, Sensor_currents]]):
 
         output.write('\n')
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "Sensor":
-        _fields_set = set(self.keys())
+        _fields_set = set(self.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_kWskvars = _fields_set.issuperset({'kWs'})
         _required_currents = _fields_set.issuperset({'Currents'})
@@ -12024,10 +12025,10 @@ class SensorContainer(RootModel[Union[SensorList, JSONFilePath, JSONLinesFilePat
     root: Union[SensorList, JSONFilePath, JSONLinesFilePath] = Field(..., title="SensorContainer")
 
 
-    @model_validator(mode="before")
+    @model_validator(mode="after")
     def _val_dss_model(self) -> "SensorContainer":
         try:
-            _fields_set = set(self.keys())
+            _fields_set = set(self.model_fields)
         except:
             if isinstance(self, (list, tuple)):
                 return self
