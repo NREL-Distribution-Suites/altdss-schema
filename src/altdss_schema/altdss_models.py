@@ -4975,7 +4975,7 @@ class Load(RootModel[Union[Load_kWPF, Load_kWkvar, Load_kVAPF, Load_xfkVAAllocat
 
     @model_validator(mode="after")
     def _val_dss_model(self) -> "Load":
-        _fields_set = set(self.model_fields)
+        _fields_set = set(self.root.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_kWPF = _fields_set.issuperset({'kW', 'PF'})
         _required_kWkvar = _fields_set.issuperset({'kvar', 'kW'})
