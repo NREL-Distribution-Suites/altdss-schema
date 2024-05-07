@@ -4311,7 +4311,7 @@ class Vsource(RootModel[Union[Vsource_MVAsc3MVAsc1x1r1x0r0, Vsource_Isc3Isc1x1r1
 
     @model_validator(mode="after")
     def _val_dss_model(self) -> "Vsource":
-        _fields_set = set(self.model_fields)
+        _fields_set = set(self.root.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_MVAsc3MVAsc1x1r1x0r0 = _fields_set.issuperset({'MVASC3'})
         _required_Isc3Isc1x1r1x0r0 = _fields_set.issuperset({'Isc3'})
