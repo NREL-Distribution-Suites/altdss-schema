@@ -9168,7 +9168,7 @@ class PVSystem(RootModel[Union[PVSystem_PF, PVSystem_kvar]]):
 
     @model_validator(mode="after")
     def _val_dss_model(self) -> "PVSystem":
-        _fields_set = set(self.model_fields)
+        _fields_set = set(self.root.model_fields)
         # Validate oneOf (spec. sets) based on the `required` lists
         _required_PF = _fields_set.issuperset({'PF'})
         _required_kvar = _fields_set.issuperset({'kvar'})
