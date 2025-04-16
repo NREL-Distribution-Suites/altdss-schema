@@ -5,11 +5,13 @@ build-backend = "hatchling.build"
 [project]
 name = "NREL-altdss-schema"
 version = "0.0.1"
-description = ''
+description = 'Pydantic data models for OpenDSS.'
 readme = "README.md"
 requires-python = ">=3.10"
 license = "BSD-3-Clause"
-keywords = []
+keywords = [
+  "OpenDSS", "Distribution System Suite", "Ditto", "Pydantic"
+]
 authors = [
   {name = "Paulo Meira", email = "pmeira@ieee.org"},
   { name = "Tarek Elgindy", email = "tarek.elgindy@nrel.gov" },
@@ -26,60 +28,15 @@ classifiers = [
 dependencies = ["pydantic"]
 
 [project.urls]
-Documentation = "https://github.nrel.gov/CADET/altdss-schema#readme"
-Issues = "https://github.nrel.gov/CADET/altdss-schema/issues"
-Source = "https://github.nrel.gov/CADET/altdss-schema"
-
-[tool.ruff]
-# Exclude a variety of commonly ignored directories.
-exclude = [
-  ".git",
-  ".ruff_cache",
-  ".venv",
-  "_build",
-  "build",
-  "dist",
-  "env",
-  "venv",
-]
-ignore-init-module-imports = true
-line-length = 99
-indent-width = 4
-target-version = "py311"
-
-[tool.ruff.lint]
-# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
-select = [
-  "C901", # McCabe complexity
-  "E4",   # Subset of pycodestyle (E)
-  "E7",
-  "E9",
-  "F",    # Pyflakes
-  "W",    # pycodestyle warnings
-]
-ignore = []
-
-# Allow fix for all enabled rules (when `--fix`) is provided.
-fixable = ["ALL"]
-unfixable = []
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-skip-magic-trailing-comma = false
-line-ending = "auto"
-docstring-code-format = true
-docstring-code-line-length = "dynamic"
+Documentation = "https://github.com/NREL-Distribution-Suites/altdss-schema#readme"
+Issues = "https://github.com/NREL-Distribution-Suites/altdss-schema/issues"
+Source = "https://github.com/NREL-Distribution-Suites/altdss-schema"
 
 [tool.hatch.metadata]
 allow-direct-references = true
-
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["E402", "F401"]
-"**/{tests,docs,tools}/*" = ["E402"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/altdss_schema"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/altdss_schema"]
+include = ["/src/altdss_schema"]
