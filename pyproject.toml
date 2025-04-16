@@ -79,7 +79,7 @@ allow-direct-references = true
 "**/{tests,docs,tools}/*" = ["E402"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/altss_schema"]
+packages = ["src/altdss_schema"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/altss_schema"]
+include = ["src/altdss_schema"]
