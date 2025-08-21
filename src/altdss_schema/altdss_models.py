@@ -1400,8 +1400,8 @@ class LoadShape(RootModel[Union[LoadShape_PMultQMultHour, LoadShape_PMultQMultIn
         num_specs = _required_PMultQMultHour + _required_PMultQMultInterval + _required_PQCSVFile + _required_CSVFile + _required_SngFile + _required_DblFile
         if num_specs > 1:
             raise ValueError("AltDSS: Conflict detected in the provided properties. Only one specification type is allowed.")
-        elif num_specs == 0:
-            raise ValueError("AltDSS: Model is not fully specified; no submodel is fully satisfied.")
+        # elif num_specs == 0:
+        #     raise ValueError("AltDSS: Model is not fully specified; no submodel is fully satisfied.")
 
         return self
 
@@ -9175,8 +9175,8 @@ class PVSystem(RootModel[Union[PVSystem_PF, PVSystem_kvar]]):
         num_specs = _required_PF + _required_kvar
         if num_specs > 1:
             raise ValueError("AltDSS: Conflict detected in the provided properties. Only one specification type is allowed.")
-        elif num_specs == 0:
-            raise ValueError("AltDSS: Model is not fully specified; no submodel is fully satisfied.")
+        # elif num_specs == 0:
+        #     raise ValueError("AltDSS: Model is not fully specified; no submodel is fully satisfied.")
 
         return self
 
